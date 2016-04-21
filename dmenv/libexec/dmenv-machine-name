@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Summary: Show the current docker machine
+
+set -e
+[ -n "$DMENV_DEBUG" ] && set -x
+
+if [ -z "$DMENV_MACHINE" ]; then
+  DMENV_MACHINE_FILE="$(dmenv-machine-file)"
+  DMENV_MACHINE="$(dmenv-machine-file-read "$DMENV_MACHINE_FILE" || true)"
+fi
+
+if [ -z "$DMENV_MACHINE" ] || [ "$DMENV_MACHINE" = "system" ]; then
+  echo "system"
+  exit
+fi
+
+machine_exists() {
+  local machine="$1"
+  local available=($(docker-machine ls -q | tr '\n' ' '))
+  [[ ${available[*]} =~ ${machine} ]]
+}
+
+if machine_exists "$DMENV_MACHINE"; then
+  echo "$DMENV_MACHINE"
+else
+  echo "dmenv: machine \`$DMENV_MACHINE' is not installed" >&2
+  exit 1
+fi

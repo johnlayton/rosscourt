@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Summary: Explain how the current docker machine is set
+
+set -e
+[ -n "$DMENV_DEBUG" ] && set -x
+
+if [ -n "$DMENV_MACHINE" ]; then
+  echo "DMENV_MACHINE environment variable"
+else
+  dmenv-machine-file
+fi

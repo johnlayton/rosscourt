@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Usage: dmenv completions <command> [arg1 arg2...]
+
+set -e
+[ -n "$DMENV_DEBUG" ] && set -x
+
+COMMAND="$1"
+if [ -z "$COMMAND" ]; then
+  dmenv-help --usage completions >&2
+  exit 1
+fi
+
+COMMAND_PATH="$(command -v "dmenv-$COMMAND" || command -v "dmenv-sh-$COMMAND")"
+if grep -i "^# provide dmenv completions" "$COMMAND_PATH" >/dev/null; then
+  shift
+  exec "$COMMAND_PATH" --complete "$@"
+fi

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Summary: Show the current docker machine and its origin
+#
+# Shows the currently selected docker machine and how it was
+# selected. To obtain only the version string, use `dmenv version-name'.
+
+set -e
+[ -n "$DMENV_DEBUG" ] && set -x
+
+echo "$(dmenv-machine-name) (set by $(dmenv-machine-origin))"

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Summary: Detect the file that sets the current dmenv machine
+
+set -e
+[ -n "$DMENV_DEBUG" ] && set -x
+
+find_local_machine_file() {
+  local root="$1"
+  while [ -n "$root" ]; do
+    if [ -e "${root}/.dmenv-machine" ]; then
+      echo "${root}/.dmenv-machine"
+      exit
+    fi
+    root="${root%/*}"
+  done
+}
+
+find_local_machine_file "$DMENV_DIR"
+[ "$DMENV_DIR" = "$PWD" ] || find_local_machine_file "$PWD"
+
+global_machine_file="${DMENV_ROOT}/machine"
+
+if [ -e "$global_machine_file" ]; then
+  echo "$global_machine_file"
+elif [ -e "${DMENV_ROOT}/global" ]; then
+  echo "${DMENV_ROOT}/global"
+elif [ -e "${DMENV_ROOT}/default" ]; then
+  echo "${DMENV_ROOT}/default"
+else
+  echo "$global_machine_file"
+fi

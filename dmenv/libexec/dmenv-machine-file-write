@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Usage: dmenv machine-file-write <file> <machine>
+
+set -e
+[ -n "$DMENV_DEBUG" ] && set -x
+
+DMENV_MACHINE_FILE="$1"
+DMENV_MACHINE="$2"
+
+if [ -z "$DMENV_MACHINE" ] || [ -z "$DMENV_MACHINE_FILE" ]; then
+  dmenv-help --usage machine-file-write >&2
+  exit 1
+fi
+
+# Make sure the specified machine is installed.
+#dmenv-prefix "$DMENV_MACHINE" >/dev/null
+
+# Write the machine out to disk.
+echo "$DMENV_MACHINE" > "$DMENV_MACHINE_FILE"
