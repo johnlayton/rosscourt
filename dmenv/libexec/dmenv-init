@@ -73,6 +73,8 @@ fi
 
 mkdir -p "${DMENV_ROOT}/"{shims,versions}
 
+ln -s -f "$HOME/.docker/machine/machines" "${DMENV_ROOT}"
+
 echo 'export PATH="'${DMENV_ROOT}'/shims:${PATH}"'
 
 case "$shell" in
