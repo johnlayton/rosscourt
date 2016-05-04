@@ -13,17 +13,16 @@ if [ -z "$DMENV_MACHINE" ] || [ "$DMENV_MACHINE" = "system" ]; then
   exit
 fi
 
-machine_active() {
+machine_running() {
   local machine="$1"
-#  local available=($(docker-machine ls -q | tr '\n' ' '))
-  local active="$(docker-machine active 2>&1)"
-  [ "${active}" == "${machine}" ]
+  local running="$(docker-machine status ${machine} 2>&1)"
+  [ "${running}" == "Running" ]
 }
 
-if machine_active "$DMENV_MACHINE"; then
+if machine_running "$DMENV_MACHINE"; then
   echo "$DMENV_MACHINE"
   exit 0
 else
-  echo "dmenv: machine \`$DMENV_MACHINE' is not active" >&2
+  echo "dmenv: machine \`$DMENV_MACHINE' is not running" >&2
   exit 1
 fi

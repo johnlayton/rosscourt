@@ -13,16 +13,16 @@ if [ -z "$DMENV_MACHINE" ] || [ "$DMENV_MACHINE" = "system" ]; then
   exit
 fi
 
-machine_active() {
+machine_exists() {
   local machine="$1"
-  local active="$(docker-machine active 2>&1)"
-  [ "${active}" == "${machine}" ]
+  local available=($(docker-machine ls -q | tr '\n' ' '))
+  [[ ${available[*]} =~ ${machine} ]]
 }
 
-if machine_active "$DMENV_MACHINE"; then
+if machine_exists "$DMENV_MACHINE"; then
   echo "$DMENV_MACHINE"
   exit 0
 else
-  echo "dmenv: machine \`$DMENV_MACHINE' is not active" >&2
+  echo "dmenv: machine \`$DMENV_MACHINE' does not exist" >&2
   exit 1
 fi

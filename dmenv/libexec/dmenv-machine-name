@@ -14,15 +14,4 @@ if [ -z "$DMENV_MACHINE" ] || [ "$DMENV_MACHINE" = "system" ]; then
   exit
 fi
 
-machine_exists() {
-  local machine="$1"
-  local available=($(docker-machine ls -q | tr '\n' ' '))
-  [[ ${available[*]} =~ ${machine} ]]
-}
-
-if machine_exists "$DMENV_MACHINE"; then
-  echo "$DMENV_MACHINE"
-else
-  echo "dmenv: machine \`$DMENV_MACHINE' is not installed" >&2
-  exit 1
-fi
+echo "$DMENV_MACHINE"
