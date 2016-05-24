@@ -12,10 +12,10 @@
 set -e
 [ -n "$DMENV_DEBUG" ] && set -x
 
-version="0.1.1"
+VERSION="0.0.0"
 
 cd "$DMENV_ROOT"
 git_revision="$(git describe --tags HEAD 2>/dev/null || true)"
 git_revision="${git_revision#v}"
 
-echo "dmenv ${git_revision:-$version}"
+echo "dmenv ${git_revision:-$VERSION}"

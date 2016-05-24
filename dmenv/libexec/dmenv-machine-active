@@ -19,7 +19,15 @@ machine_active() {
   [ "${active}" == "${machine}" ]
 }
 
+machine_activate() {
+  local machine="$1"
+  eval $(docker-machine env ${machine})
+}
+
 if machine_active "$DMENV_MACHINE"; then
+  echo "$DMENV_MACHINE"
+  exit 0
+elif machine_activate "$DMENV_MACHINE"; then
   echo "$DMENV_MACHINE"
   exit 0
 else
