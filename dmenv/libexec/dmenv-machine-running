@@ -20,7 +20,6 @@ machine_running() {
 }
 
 if machine_running "$DMENV_MACHINE"; then
-  echo "$DMENV_MACHINE"
   exit 0
 else
   echo "dmenv: machine \`$DMENV_MACHINE' is not running" >&2

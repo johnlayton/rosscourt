@@ -15,20 +15,16 @@ if [ -z "$DMENV_MACHINE" ] || [ "$DMENV_MACHINE" = "system" ]; then
   exit
 fi
 
-machine_create() {
-  docker-machine create ${1} --driver=virtualbox 2>&1
-}
-
 if dmenv-machine-active "$DMENV_MACHINE"; then
-    echo "dmenv: machine-create \`$DMENV_MACHINE' already active" >&2
+    echo "dmenv: machine-create \`$DMENV_MACHINE' already created" >&2
     exit 0
 else
-    if machine_create "$DMENV_MACHINE"; then
-        $(dmenv-machine-file-write .dmenv-machine "$DMENV_MACHINE")
-        echo "$DMENV_MACHINE"
+    if dmenv-machine-start "$DMENV_MACHINE"; then
+        docker-machine regenerate-certs --force "$DMENV_MACHINE"
+        eval "$(docker-machine env ${DMENV_MACHINE})"
         exit 0
     else
-        echo "dmenv: machine-create \`$DMENV_MACHINE' not created" >&2
+        echo "dmenv: machine-create \`$DMENV_MACHINE' not activated" >&2
         exit 1
     fi
 fi

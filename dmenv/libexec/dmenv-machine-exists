@@ -20,7 +20,6 @@ machine_exists() {
 }
 
 if machine_exists "$DMENV_MACHINE"; then
-  echo "$DMENV_MACHINE"
   exit 0
 else
   echo "dmenv: machine \`$DMENV_MACHINE' does not exist" >&2
