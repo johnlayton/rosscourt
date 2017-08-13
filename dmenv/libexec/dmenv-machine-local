@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# Summary: Set or show the local directory specific docker machine
+#
+# Usage: dmenv local <version>
+#        dmenv local --unset
+#
+# Sets the local application-specific docker machine by writing the
+# version name to a file named `.dmenv-machine'.
+#
+
+set -e
+[ -n "$DMENV_DEBUG" ] && set -x
+
+# Provide dmenv completions
+if [ "$1" = "--complete" ]; then
+  echo --unset
+  echo system
+  exec dmenv-versions --bare
+fi
+
+DMENV_MACHINE="$1"
+
+if [ "$DMENV_MACHINE" = "--unset" ]; then
+  rm -f .dmemv-machine
+elif [ -n "$DMENV_MACHINE" ]; then
+#  if [ "$(DMENV_MACHINE= dmenv-machine-origin)" -ef .dmemv-machine ]; then
+#    rm -f .dmemv-machine
+#    { echo "dmenv: removed existing \`.node-version' file and migrated"
+#      echo "       local version specification to \`.dmenv-version' file"
+#    } >&2
+#  fi
+  dmenv-machine-file-write .dmenv-machine "$DMENV_MACHINE"
+else
+  dmenv-version-file-read .dmenv-machine ||
+  { echo "dmenv: no local machine configured for this directory"
+    exit 1
+  } >&2
+fi
