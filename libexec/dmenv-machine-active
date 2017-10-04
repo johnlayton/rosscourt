@@ -4,6 +4,8 @@
 set -e
 [ -n "$DMENV_DEBUG" ] && set -x
 
+DMENV_MACHINE="$1"
+
 if [ -z "$DMENV_MACHINE" ]; then
   DMENV_MACHINE="$(dmenv-machine-name)"
 fi
