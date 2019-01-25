@@ -13,15 +13,23 @@ if [ -z "$DMENV_MACHINE" ] || [ "$DMENV_MACHINE" = "system" ]; then
   exit
 fi
 
+machine_running() {
+  local machine="$1"
+  local running="$(docker-machine status ${machine} 2>&1)"
+  [ "${running}" == "Running" ]
+}
+
 machine_start() {
   docker-machine start ${1} 2>&1
 }
 
-if dmenv-machine-running "$DMENV_MACHINE"; then
+if machine_running "$DMENV_MACHINE"; then
+    echo "dmenv: machine \`$DMENV_MACHINE' already running" >&2
     exit 0
 else
     if machine_start "$DMENV_MACHINE"; then
         docker-machine regenerate-certs --force "$DMENV_MACHINE"
+        echo "dmenv: machine \`$DMENV_MACHINE' started" >&2
         exit 0
     else
         echo "dmenv: machine \`$DMENV_MACHINE' is not started" >&2

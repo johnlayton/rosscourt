@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Summary: Destroy a new docker machine
+
+set -e
+[ -n "$DMENV_DEBUG" ] && set -x
+
+DMENV_MACHINE="$1"
+
+if [ -z "$DMENV_MACHINE" ]; then
+  DMENV_MACHINE="$(dmenv-machine-name)"
+fi
+
+if [ -z "$DMENV_MACHINE" ] || [ "$DMENV_MACHINE" = "system" ]; then
+  echo "no machine specified"
+  exit
+fi
+
+machine_exists() {
+  local machine="$1"
+  local available=($(docker-machine ls -q | tr '\n' ' '))
+  [[ ${available[*]} =~ ${machine} ]]
+}
+
+machine_active() {
+  local machine="$1"
+  local active="$(docker-machine active 2>&1)"
+  [ "${active}" == "${machine}" ]
+}
+
+machine-destroy() {
+  docker-machine rm ${1}
+}
+
+if machine_exists "$DMENV_MACHINE"; then
+    if machine-destroy "$DMENV_MACHINE"; then
+        echo "dmenv: machine-create \`$DMENV_MACHINE' destroyed" >&2
+        exit 0
+    else
+        echo "dmenv: machine-create \`$DMENV_MACHINE' not destroyed" >&2
+        exit 1
+    fi
+else
+    echo "dmenv: destroy \`$DMENV_MACHINE' does not exist" >&2
+    exit 0
+
+fi

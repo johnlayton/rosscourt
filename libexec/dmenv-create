@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Summary: Create a new docker machine
+
+set -e
+[ -n "$DMENV_DEBUG" ] && set -x
+
+DMENV_MACHINE="$1"
+
+if [ -z "$DMENV_MACHINE" ]; then
+  DMENV_MACHINE="$(dmenv-machine-name)"
+fi
+
+if [ -z "$DMENV_MACHINE" ] || [ "$DMENV_MACHINE" = "system" ]; then
+  echo "no machine specified"
+  exit
+fi
+
+machine_active() {
+  local machine="$1"
+  local active="$(docker-machine active 2>&1)"
+  [ "${active}" == "${machine}" ]
+}
+
+machine_exists() {
+  local machine="$1"
+  local available=($(docker-machine ls -q | tr '\n' ' '))
+  [[ ${available[*]} =~ ${machine} ]]
+}
+
+machine_create() {
+  docker-machine create ${1} \
+      --driver=virtualbox \
+      --virtualbox-memory "2048" \
+      --virtualbox-disk-size "20000" \
+      --engine-opt dns=8.8.8.8 \
+      2>&1
+}
+
+if machine_exists "$DMENV_MACHINE"; then
+#if machine_active "$DMENV_MACHINE"; then
+    echo "dmenv: create \`$DMENV_MACHINE' already exists" >&2
+    exit 0
+else
+    if machine_create "$DMENV_MACHINE"; then
+        $(dmenv-machine-file-write .dmenv-machine "$DMENV_MACHINE")
+        echo "dmenv: create \`$DMENV_MACHINE' created" >&2
+        exit 0
+    else
+        echo "dmenv: create \`$DMENV_MACHINE' not created" >&2
+        exit 1
+    fi
+fi
