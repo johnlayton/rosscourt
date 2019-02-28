@@ -31,7 +31,7 @@ machine_create() {
   docker-machine create ${1} \
       --driver=virtualbox \
       --virtualbox-host-dns-resolver \
-      --virtualbox-memory "4096" \
+      --virtualbox-memory "8192" \
       --virtualbox-disk-size "20000" \
       2>&1
 }
