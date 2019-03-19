@@ -25,13 +25,8 @@ if machine_active "$DMENV_MACHINE"; then
     echo "dmenv: activate \`$DMENV_MACHINE' already active" >&2
     exit 0
 else
-    if dmenv-start "$DMENV_MACHINE"; then
-#        docker-machine regenerate-certs --force "$DMENV_MACHINE"
-        eval "$(docker-machine env ${DMENV_MACHINE})"
-        echo "dmenv: activate \`$DMENV_MACHINE' activated" >&2
-        exit 0
-    else
-        echo "dmenv: activate \`$DMENV_MACHINE' not activated" >&2
-        exit 1
-    fi
+#   docker-machine regenerate-certs --force "$DMENV_MACHINE"
+    docker-machine env ${DMENV_MACHINE}
+    echo "dmenv: activate \`$DMENV_MACHINE' activated" >&2
+    exit 0
 fi
